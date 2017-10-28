@@ -6,6 +6,7 @@
  Copyright   : a veces siento que
  Description : Hello World in C, Ansi-style
  ============================================================================
+ XXX: https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1895
  */
 
 #define _GNU_SOURCE
@@ -344,7 +345,7 @@ static int caca_comun_lee_matrix_long_stdin(tipo_dato *matrix, int *num_filas,
 	return 0;
 }
 
-static inline natural caca_comun_cuenta_bitchs(tipo_dato num) {
+static natural caca_comun_cuenta_bitchs(tipo_dato num) {
 	natural bitch_cnt = 0;
 	tipo_dato num_mod = 0;
 	num_mod = num;
@@ -387,7 +388,8 @@ int hash_map_robin_hood_back_shift_init(hm_rr_bs_tabla *ht, int num_cubetas) {
 }
 int hash_map_robin_hood_back_shift_fini(hm_rr_bs_tabla *ht) {
 	if (ht->buckets_ != NULL) {
-		for (uint32_t i = 0; i < ht->num_buckets_; i++) {
+		uint32_t i;
+		for (i = 0; i < ht->num_buckets_; i++) {
 			if (ht->buckets_[i].entry != NULL) {
 				free(ht->buckets_[i].entry);
 				ht->buckets_[i].entry = NULL;
@@ -397,7 +399,7 @@ int hash_map_robin_hood_back_shift_fini(hm_rr_bs_tabla *ht) {
 	}
 	return 0;
 }
-static inline int hash_map_robin_hood_back_shift_llena_distancia_a_indice_inicio(
+static int hash_map_robin_hood_back_shift_llena_distancia_a_indice_inicio(
 		hm_rr_bs_tabla *ht, uint64_t index_stored, uint64_t *distance) {
 	hm_cubeta cubeta = ht->buckets_[index_stored];
 	*distance = 0;
@@ -416,7 +418,6 @@ hm_iter hash_map_robin_hood_back_shift_obten(hm_rr_bs_tabla *ht,
 		const entero_largo key, entero_largo *value) {
 	uint64_t num_cubetas = ht->num_buckets_;
 	uint64_t prob_max = ht->probing_max_;
-//	uint64_t hash = hash_function_caca(key);
 	uint64_t hash = key % num_cubetas;
 	uint64_t index_init = hash;
 	uint64_t probe_distance = 0;
@@ -457,7 +458,6 @@ hm_iter hash_map_robin_hood_back_shift_pon(hm_rr_bs_tabla *ht, entero_largo key,
 		return HASH_MAP_VALOR_INVALIDO;
 	}
 	ht->num_buckets_used_ += 1;
-//	uint64_t hash = hash_function_caca(key);
 	uint64_t hash = key % num_cubetas;
 	uint64_t index_init = hash;
 	hm_entry *entry = (hm_entry *) calloc(1, sizeof(hm_entry));
@@ -491,7 +491,6 @@ hm_iter hash_map_robin_hood_back_shift_pon(hm_rr_bs_tabla *ht, entero_largo key,
 			hash_map_robin_hood_back_shift_llena_distancia_a_indice_inicio(ht,
 					index_current, &probe_distance);
 			if (probe_current > probe_distance) {
-				// Swapping the current bucket with the one to insert
 				entry_temp = cubeta->entry;
 				hash_temp = cubeta->hash;
 				cubeta->entry = entry;
@@ -516,7 +515,8 @@ int hash_map_robin_hood_back_shift_borra(hm_rr_bs_tabla *ht,
 	uint64_t index_current = 0;
 	uint64_t probe_distance = 0;
 	hm_entry *entrada = NULL;
-	for (uint64_t i = 0; i < num_cubetas; i++) {
+	uint64_t i;
+	for (i = 0; i < num_cubetas; i++) {
 		index_current = (index_init + i) % num_cubetas;
 		entrada = ht->buckets_[index_current].entry;
 		hash_map_robin_hood_back_shift_llena_distancia_a_indice_inicio(ht,
@@ -591,27 +591,25 @@ int hash_map_robin_hood_back_shift_borra(hm_rr_bs_tabla *ht,
 	}
 	return 1;
 }
-static inline int hash_map_robin_hood_back_shift_indice_inicio(
-		hm_rr_bs_tabla *ht) {
+static int hash_map_robin_hood_back_shift_indice_inicio(hm_rr_bs_tabla *ht) {
 	return ht->probing_min_;
 }
-static inline int hash_map_robin_hood_back_shift_indice_final(
-		hm_rr_bs_tabla *ht) {
+static int hash_map_robin_hood_back_shift_indice_final(hm_rr_bs_tabla *ht) {
 	return ht->probing_max_;
 }
-static inline bool hash_map_robin_hood_back_shift_indice_existe(
-		hm_rr_bs_tabla *ht, hm_iter indice) {
+static bool hash_map_robin_hood_back_shift_indice_existe(hm_rr_bs_tabla *ht,
+		hm_iter indice) {
 	return !!ht->buckets_[indice].entry;
 }
-static inline entero_largo hash_map_robin_hood_back_shift_indice_obten_llave(
+static entero_largo hash_map_robin_hood_back_shift_indice_obten_llave(
 		hm_rr_bs_tabla *ht, hm_iter indice) {
 	assert_timeout(indice <= ht->probing_max_ && indice >= ht->probing_min_);
 	hm_entry *entrada = ht->buckets_[indice].entry;
 	assert_timeout(entrada);
 	return entrada->llave;
 }
-static inline void hash_map_robin_hood_back_shift_indice_pon_valor(
-		hm_rr_bs_tabla *ht, hm_iter indice, entero_largo valor) {
+static void hash_map_robin_hood_back_shift_indice_pon_valor(hm_rr_bs_tabla *ht,
+		hm_iter indice, entero_largo valor) {
 	assert_timeout(indice <= ht->probing_max_ && indice >= ht->probing_min_);
 	hm_entry *entrada = ht->buckets_[indice].entry;
 	assert_timeout(entrada);
@@ -683,19 +681,19 @@ int hash_map_robin_hood_back_shift_indice_borra(hm_rr_bs_tabla *ht,
 	ht->num_buckets_used_--;
 	return 0;
 }
-static inline entero_largo hash_map_robin_hood_back_shift_indice_obten_valor(
+static entero_largo hash_map_robin_hood_back_shift_indice_obten_valor(
 		hm_rr_bs_tabla *ht, hm_iter indice) {
 	assert_timeout(indice <= ht->probing_max_ && indice >= ht->probing_min_);
 	hm_entry *entrada = ht->buckets_[indice].entry;
 	assert_timeout(entrada);
 	return entrada->valor;
 }
-static inline bool hash_map_robin_hood_back_shift_esta_vacio(hm_rr_bs_tabla *ht) {
+static bool hash_map_robin_hood_back_shift_esta_vacio(hm_rr_bs_tabla *ht) {
 	assert_timeout(ht->num_buckets_used_ <= ht->num_buckets_);
 	return !ht->num_buckets_used_;
 }
 
-static inline void hash_map_robin_hood_back_shift_reemplazar(hm_rr_bs_tabla *ht,
+static void hash_map_robin_hood_back_shift_reemplazar(hm_rr_bs_tabla *ht,
 		entero_largo llave, entero_largo valor) {
 	hm_iter iter = 0;
 	entero_largo *valor_int = &(entero_largo ) { 0 };
@@ -707,8 +705,8 @@ static inline void hash_map_robin_hood_back_shift_reemplazar(hm_rr_bs_tabla *ht,
 	hash_map_robin_hood_back_shift_indice_pon_valor(ht, iter, valor);
 }
 
-static inline void hash_map_robin_hood_back_shift_insertar_nuevo(
-		hm_rr_bs_tabla *ht, entero_largo llave, entero_largo valor) {
+static void hash_map_robin_hood_back_shift_insertar_nuevo(hm_rr_bs_tabla *ht,
+		entero_largo llave, entero_largo valor) {
 	hm_iter iter = 0;
 	bool nuevo = falso;
 	iter = hash_map_robin_hood_back_shift_pon(ht, llave, valor, &nuevo);
@@ -721,7 +719,6 @@ static inline void hash_map_robin_hood_back_shift_insertar_nuevo(
 
 #if 1
 
-//http://www.thelearningpoint.net/computer-science/data-structures-heaps-with-c-program-source-code
 #define HEAP_SHIT_MAX_NODOS CACA_HEAP_MAX_ELEMS
 #define HEAP_SHIT_MAX_LLAVES CACA_HEAP_MAX_ELEMS
 #define HEAP_SHIT_VALOR_INVALIDO (((tipo_dato)1E9+100)*-1)
@@ -739,21 +736,20 @@ typedef struct heap_shit {
 	hm_rr_bs_tabla *tablon_llave_a_idx_heap;
 } heap_shit;
 
-static inline void heap_shit_invalida_nodo(heap_shit *heap_ctx,
-		heap_shit_nodo *nodo) {
+static void heap_shit_invalida_nodo(heap_shit *heap_ctx, heap_shit_nodo *nodo) {
 	nodo->llave = HEAP_SHIT_VALOR_INVALIDO;
 	nodo->prioridad = HEAP_SHIT_VALOR_INVALIDO;
 	nodo->valor = (void*) (entero_largo_sin_signo) HEAP_SHIT_VALOR_INVALIDO;
 }
 
 /*Initialize Heap*/
-static inline heap_shit *heap_shit_init(bool es_min) {
+static heap_shit *heap_shit_init(bool es_min) {
 	heap_shit *heap = calloc(1, sizeof(heap_shit));
 	assert_timeout(heap);
 	heap->heap_size = 0;
 	heap->min = es_min;
-//	memset(heap->heap, HEAP_SHIT_VALOR_INVALIDO, sizeof(heap->heap));
-	for (int i = 0; i < HEAP_SHIT_MAX_NODOS; i++) {
+	int i;
+	for (i = 0; i < HEAP_SHIT_MAX_NODOS; i++) {
 		heap_shit_invalida_nodo(heap, heap->heap + i);
 	}
 	heap->tablon_llave_a_idx_heap = calloc(1, sizeof(hm_rr_bs_tabla));
@@ -769,30 +765,30 @@ void heap_shit_fini(heap_shit *heap_ctx) {
 	free(heap_ctx);
 }
 
-static inline bool heap_shit_nodo_valido(heap_shit_nodo *nodo) {
+static bool heap_shit_nodo_valido(heap_shit_nodo *nodo) {
 	assert_timeout(
 			(nodo->llave!=HEAP_SHIT_VALOR_INVALIDO && nodo->prioridad!=HEAP_SHIT_VALOR_INVALIDO) || (nodo->prioridad==nodo->llave));
 
 	return nodo->llave != HEAP_SHIT_VALOR_INVALIDO;
 }
 
-static inline void heap_shit_valida_nodos(heap_shit *heap_ctx) {
-	for (int i = 1; i <= heap_ctx->heap_size; i++) {
+static void heap_shit_valida_nodos(heap_shit *heap_ctx) {
+	int i;
+	for (i = 1; i <= heap_ctx->heap_size; i++) {
 		assert_timeout(heap_shit_nodo_valido(heap_ctx->heap + i));
 	}
 }
 
-static inline natural heap_shit_idx_padre(natural idx_nodo) {
+static natural heap_shit_idx_padre(natural idx_nodo) {
 	return idx_nodo >> 1;
 }
 
-static inline natural heap_shit_idx_hijo_izq(natural idx_nodo) {
+static natural heap_shit_idx_hijo_izq(natural idx_nodo) {
 	return idx_nodo << 1;
 }
 
 /*Insert an element into the heap */
-static inline void heap_shit_insert(heap_shit *heap_ctx,
-		heap_shit_nodo *nodo_nuevo) {
+static void heap_shit_insert(heap_shit *heap_ctx, heap_shit_nodo *nodo_nuevo) {
 	natural heap_size = heap_ctx->heap_size;
 	heap_shit_nodo *heap = NULL;
 	hm_rr_bs_tabla *mapeo_inv = heap_ctx->tablon_llave_a_idx_heap;
@@ -817,7 +813,6 @@ static inline void heap_shit_insert(heap_shit *heap_ctx,
 					|| (!heap_ctx->min
 							&& heap[heap_shit_idx_padre(now)].prioridad
 									< nodo_nuevo->prioridad))) {
-//printf("caca now %u de heap %u elem %u\n",now,heap[now],element);
 		natural idx_padre = heap_shit_idx_padre(now);
 		tipo_dato llave_padre = heap[idx_padre].llave;
 		assert_timeout(llave_padre!= HEAP_SHIT_VALOR_INVALIDO);
@@ -828,14 +823,12 @@ static inline void heap_shit_insert(heap_shit *heap_ctx,
 
 		now = idx_padre;
 	}
-//printf("raise now %u con heap %u y elem %u res %u\n",now,heap[now / 2],element, (unsigned int)heap[now / 2]>(unsigned int)element);
 
 	heap[now] = *nodo_nuevo;
 	hash_map_robin_hood_back_shift_insertar_nuevo(mapeo_inv, nodo_nuevo->llave,
 			now);
 
 	heap_ctx->heap_size = heap_size;
-//	heap_shit_valida_nodos(heap_ctx);
 }
 
 /*
@@ -846,7 +839,7 @@ static inline void heap_shit_insert(heap_shit *heap_ctx,
 #define heap_shit_insertar(heap_ctx,prioridad_in,llave_in,valor_in) heap_shit_insert(heap_ctx,&(heap_shit_nodo) {.prioridad=prioridad_in,.llave=llave_in,.valor=valor_in})
 #define heap_shit_insertar_valor_unico(heap_ctx,valor) heap_shit_insertar(heap_ctx,valor,valor,(void *)((entero_largo)valor))
 
-static inline void *heap_shit_delete(heap_shit *heap_ctx, natural idx_a_borrar) {
+static void *heap_shit_delete(heap_shit *heap_ctx, natural idx_a_borrar) {
 	natural heap_size = heap_ctx->heap_size;
 	natural child, now;
 	heap_shit_nodo minElement = { 0 };
@@ -891,7 +884,6 @@ static inline void *heap_shit_delete(heap_shit *heap_ctx, natural idx_a_borrar) 
 		 || (!heap_ctx->min
 		 && (natural) heap[now / 2] < (natural) lastElement))) {
 		 */
-		//printf("caca now %u de heap %u elem %u\n",now,heap[now],element);
 		while (heap_shit_nodo_valido(heap + heap_shit_idx_padre(now))
 				&& ((heap_ctx->min
 						&& heap[heap_shit_idx_padre(now)].prioridad
@@ -933,7 +925,6 @@ static inline void *heap_shit_delete(heap_shit *heap_ctx, natural idx_a_borrar) 
 			}
 			/* To check if the last element fits ot not it suffices to check if the last element
 			 is less than the minimum element among both the children*/
-			//printf("last %u heap %u\n",lastElement,heap[child]);
 			if ((heap_ctx->min && lastElement.prioridad > heap[child].prioridad)
 					|| (!heap_ctx->min
 							&& lastElement.prioridad < heap[child].prioridad)) {
@@ -960,12 +951,10 @@ static inline void *heap_shit_delete(heap_shit *heap_ctx, natural idx_a_borrar) 
 	}
 	heap_ctx->heap_size = heap_size;
 	heap_shit_invalida_nodo(heap_ctx, heap + heap_size + 1);
-	//heap_shit_valida_nodos(heap_ctx);
 	return resultado;
 }
 
-static inline void *heap_shit_borrar_directo(heap_shit *heap_ctx,
-		tipo_dato llave) {
+static void *heap_shit_borrar_directo(heap_shit *heap_ctx, tipo_dato llave) {
 	natural heap_size = heap_ctx->heap_size;
 	hm_rr_bs_tabla *indices_valores = heap_ctx->tablon_llave_a_idx_heap;
 	entero_largo idx_a_borrar;
@@ -982,7 +971,7 @@ static inline void *heap_shit_borrar_directo(heap_shit *heap_ctx,
 	return heap_shit_delete(heap_ctx, idx_a_borrar);
 }
 
-static inline void *heap_shit_borra_torpe(heap_shit *heap_ctx) {
+static void *heap_shit_borra_torpe(heap_shit *heap_ctx) {
 	if (heap_ctx->heap_size) {
 		return heap_shit_borrar_directo(heap_ctx, heap_ctx->heap[1].llave);
 	} else {
@@ -1104,7 +1093,7 @@ void heap_shit_valida_mierda(heap_shit *heap_ctx) {
 
 #endif
 
-static inline void suma_caca_main() {
+static void suma_caca_main() {
 	natural numeros_tam = 0;
 
 	scanf("%u", &numeros_tam);
